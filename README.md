@@ -1,3 +1,6 @@
+# 개요
+- 백준, 프로그래머스 등 소스코드 repository
+
 # backjoonHub 설명
 - webHook 기능을 활용하여, 문제를 맞춘 후 소스파일(java파일), 설명(md파일)을 생성 후 푸쉬를 함 <br>
 
