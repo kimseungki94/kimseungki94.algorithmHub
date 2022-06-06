@@ -16,34 +16,32 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String text = br.readLine();
         while (!text.equals(".")) {
-            answer="yes";
+            answer = "yes";
             for (char c : text.toCharArray()) {
-                if (c != '(' && c != ')' && c != '[' && c != ']') {
-                    continue;
-                } else {
-                    if(stack.isEmpty()) {
-                        stack.push(c);
+                if (c == '(' || c == '[') {
+                    stack.push(c);
+                } else if (c == ')') {
+                    if (!stack.isEmpty() && stack.peek() == '(') {
+                        stack.pop();
                     } else {
-                        if (c == '(' || c == '[') {
-                            stack.push(c);
-                        } else if (c == ')') {
-                            if (stack.peek() == '(') {
-                                stack.pop();
-                            } else {
-                                stack.push(c);
-                            }
-                        } else if (c == ']') {
-                            if (stack.peek() == '[') {
-                                stack.pop();
-                            } else {
-                                stack.push(c);
-                            }
-                        }
+                        answer = "no";
+                        stack.push(c);
+                        break;
+                    }
+                } else if (c == ']') {
+                    if (!stack.isEmpty() && stack.peek() == '[') {
+                        stack.pop();
+                    } else {
+                        answer = "no";
+                        stack.push(c);
+                        break;
                     }
                 }
             }
-            if(stack.size()!=0) {
-                answer="no";
+            if (stack.size() != 0) {
+                answer = "no";
+            } else {
+                answer = "yes";
             }
             stack.clear();
             text = br.readLine();
