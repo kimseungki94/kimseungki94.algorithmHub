@@ -1,63 +1,69 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 public class Main {
-    static int N, startIndex, linkIndex, startSum, linkSum, min;
-    static int[] isSelected, startTeam, linkTeam;
-    static int[][] team;
 
+    static int N, M, K, count, size, max, sum, min;
+    static StringBuilder sb = new StringBuilder();
+    static int[][] map, tempMap;
+    static int[] arr;
+    static boolean flag = false;
+    static ArrayList<Integer> list = new ArrayList<>();
 
-    public static void input() throws Exception {
+    public void input() throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
-        team = new int[N + 1][N + 1];
+        map = new int[N + 1][N + 1];
+        min = Integer.MAX_VALUE;
         for (int i = 1; i <= N; i++) {
             st = new StringTokenizer(br.readLine());
-            for (int index2 = 1; index2 <= N; index2++) {
-                team[i][index2] = Integer.parseInt(st.nextToken());
+            for (int j = 1; j <= N; j++) {
+                int value = Integer.parseInt(st.nextToken());
+                map[i][j] = value;
+                sum += value;
             }
         }
-        isSelected = new int[N + 1];
-        startTeam = new int[N / 2];
-        linkTeam = new int[N / 2];
-        min = Integer.MAX_VALUE;
+        arr = new int[N + 1];
     }
 
+    public void DFS(int limit, int index) {
+        if (min == 0) return;
+        if (limit == N / 2) {
+            int data = 0;
+            int data2 = 0;
+            for (int i = 1; i < N; i++) {
+                for (int j = i + 1; j <= N; j++) {
+                    if (arr[i] == 1 && arr[j] == 1) {
+                        data += map[i][j] + map[j][i];
+                    }
+                    if (arr[i] == 0 && arr[j] == 0) {
+                        data2 += map[i][j] + map[j][i];
+                    }
+                }
 
-    public static void func(int index, int count) {
-        if (count == N / 2) {
-            for (int i = 1; i <= N; i++) {
-                if (isSelected[i] == 1) startTeam[startIndex++] = i;
-                else linkTeam[linkIndex++] = i;
             }
-            startIndex = 0;
-            linkIndex = 0;
-            startSum = calculate(startTeam);
-            linkSum = calculate(linkTeam);
-            min = Math.min(Math.abs(startSum - linkSum), min);
-        } else {
-            for (int i = index; i <= N; i++) {
-                isSelected[i] = 1;
-                func(i + 1, count + 1);
-                isSelected[i] = 0;
+            min = Math.min(min, Math.abs(data - data2));
+            return;
+        }
+        for (int i = index; i <= N; i++) {
+            if (arr[i] == 0) {
+                arr[i] = 1;
+                DFS(limit + 1, i + 1);
+                arr[i] = 0;
             }
         }
-    }
-
-    private static int calculate(int[] teamNumber) {
-        int value = 0;
-        for (int i = 0; i < teamNumber.length; i++) {
-            for (int j = i + 1; j < teamNumber.length; j++) {
-                value += team[teamNumber[i]][teamNumber[j]]+team[teamNumber[j]][teamNumber[i]];
-            }
-        }
-        return value;
     }
 
     public static void main(String[] args) throws Exception {
-        input();
-        func(1, 0);
+        Main main = new Main();
+        main.input();
+        main.DFS(0, 1);
         System.out.println(min);
     }
 }
