@@ -8,94 +8,107 @@ import java.util.StringTokenizer;
 public class Main {
     static int N, M;
     static char[][] map;
-    static boolean[][][][] visited;
-    static int[] dr = {-1, 0, 1, 0}, dc = {0, 1, 0, -1};
+    static boolean[][][][] isVisited;
+    static int[] dy = new int[]{-1, 0, 1, 0};
+    static int[] dx = new int[]{0, 1, 0, -1};
+
+    public static class Point {
+        int rRow;
+        int rCol;
+        int bRow;
+        int bCol;
+
+        public Point(int rRow, int rCol, int bRow, int bCol) {
+            this.rRow = rRow;
+            this.rCol = rCol;
+            this.bRow = bRow;
+            this.bCol = bCol;
+        }
+    }
+
+    public static class Turn {
+        int row;
+        int col;
+        int cost;
+
+        public Turn(int row, int col, int cost) {
+            this.row = row;
+            this.col = col;
+            this.cost = cost;
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
+        int rRow,rCol,bRow,bCol;
+        rRow = rCol = bRow = bCol = 0;
         map = new char[N][M];
-        visited = new boolean[N][M][N][M];
-        int rdr, rdc, blr, blc;
-        rdr = rdc = blr = blc = 0;
+        isVisited = new boolean[N][M][N][M];
         for (int i = 0; i < N; i++) {
             map[i] = br.readLine().toCharArray();
             for (int j = 0; j < M; j++) {
                 if (map[i][j] == 'R') {
-                    rdr = i;
-                    rdc = j;
-                } else if (map[i][j] == 'B') {
-                    blr = i;
-                    blc = j;
+                    rRow = i;
+                    rCol = j;
+                }
+                else if (map[i][j] == 'B') {
+                    bRow = i;
+                    bCol = j;
                 }
             }
         }
-        System.out.println(process(rdr, rdc, blr, blc));
+        System.out.println(BFS(rRow,rCol,bRow,bCol));
     }
 
-    private static int process(int rdr, int rdc, int blr, int blc) {
-        Queue<Turn> q = new LinkedList<>();
+    public static int BFS(int rRow,int rCol,int bRow, int bCol) {
+        Queue<Point> queue = new LinkedList<>();
         int time = 1;
-        q.add(new Turn(rdr, rdc, blr, blc));
-        visited[rdr][rdc][blr][blc] = true;
-        Marble nRed = null, nBlue = null;
-        while (!q.isEmpty()) {
-            int size = q.size();
-            while (size-- > 0) {
-                Turn now = q.poll();
-                for (int d = 0; d < 4; d++) {
-                    nRed = move(now.rdr, now.rdc, 0, d);
-                    nBlue = move(now.blr, now.blc, 0, d);
-                    if (map[nBlue.r][nBlue.c] == 'O') continue;
-                    if (map[nRed.r][nRed.c] == 'O') return 1;
-                    if (nRed.r == nBlue.r && nRed.c == nBlue.c) {
-                        if (nRed.dist > nBlue.dist) {
-                            nRed.r -= dr[d];
-                            nRed.c -= dc[d];
+        queue.offer(new Point(rRow, rCol, bRow, bCol));
+        isVisited[rRow][rCol][bRow][bCol] = true;
+        Turn rTurn = null;
+        Turn bTurn = null;
+        while (!queue.isEmpty()) {
+            int len = queue.size();
+            while (len-- > 0) {
+                Point point = queue.poll();
+                for (int i = 0; i < 4; i++) {
+                    rTurn = move(point.rRow, point.rCol, 0, i);
+                    bTurn = move(point.bRow, point.bCol, 0, i);
+
+                    if (map[bTurn.row][bTurn.col] == 'O') continue;
+                    if (map[rTurn.row][rTurn.col] == 'O') return 1;
+                    if (bTurn.row == rTurn.row && bTurn.col == rTurn.col) {
+                        if (rTurn.cost > bTurn.cost) {
+                            rTurn.row -= dy[i];
+                            rTurn.col -= dx[i];
                         } else {
-                            nBlue.r -= dr[d];
-                            nBlue.c -= dc[d];
+                            bTurn.row -= dy[i];
+                            bTurn.col -= dx[i];
                         }
                     }
-                    if (visited[nRed.r][nRed.c][nBlue.r][nBlue.c]) continue;
-                    visited[nRed.r][nRed.c][nBlue.r][nBlue.c] = true;
-                    q.add(new Turn(nRed.r, nRed.c, nBlue.r, nBlue.c));
+                    if (isVisited[rTurn.row][rTurn.col][bTurn.row][bTurn.col]) continue;
+
+                    isVisited[rTurn.row][rTurn.col][bTurn.row][bTurn.col] = true;
+                    queue.offer(new Point(rTurn.row, rTurn.col, bTurn.row, bTurn.col));
+
                 }
             }
             if (++time > 10) return 0;
-        } return 0;
+        }
+        return 0;
     }
 
-    private static Marble move(int r, int c, int dist, int d) {
-        int rr = r, cc = c;
-        while (map[rr + dr[d]][cc + dc[d]] != '#' && map[rr][cc] != 'O') {
-            rr += dr[d];
-            cc += dc[d];
-            dist++;
+    public static Turn move(int row, int col, int work, int button) {
+        int rr = row;
+        int cc = col;
+        while (map[rr + dy[button]][cc + dx[button]] != '#' && map[rr][cc] != 'O') {
+            rr += dy[button];
+            cc += dx[button];
+            work++;
         }
-        return new Marble(rr, cc, dist);
-    }
-
-    static class Marble {
-        int r, c, dist;
-
-        public Marble(int r, int c, int dist) {
-            this.r = r;
-            this.c = c;
-            this.dist = dist;
-        }
-    }
-
-    static class Turn {
-        int rdr, rdc, blr, blc;
-
-        public Turn(int rdr, int rdc, int blr, int blc) {
-            this.rdr = rdr;
-            this.rdc = rdc;
-            this.blr = blr;
-            this.blc = blc;
-        }
+        return new Turn(rr, cc, work);
     }
 }
