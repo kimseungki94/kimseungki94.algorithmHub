@@ -9,10 +9,17 @@ public class Main {
     static int N, M, K, count, T, max, min, maxValue;
     static int[][] map,arr;
     static boolean[][] isSelected;
-    static int[] dy = new int[]{-1, 1, 0, 0};
-    static int[] dx = new int[]{0, 0, -1, 1};
+    static int[] dy = {-1, 1, 0, 0};
+    static int[] dx = {0, 0, -1, 1};
     static List<Integer> list = new ArrayList<>();
-
+    
+    public static void main(String[] args) throws IOException {
+        Main main = new Main();
+        main.input();
+        System.out.println(list.size());
+        for(int value : list) sb.append(value).append(" ");
+        System.out.println(sb.toString());
+    }
 
     public void input() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -55,13 +62,5 @@ public class Main {
             if (Y < 0 || Y >= N || X < 0 || X >= M) continue;
             if (map[Y][X] == 0) DFS(Y, X);
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        Main main = new Main();
-        main.input();
-        System.out.println(list.size());
-        for(int value : list) sb.append(value+" ");
-        System.out.println(sb.toString());
     }
 }
