@@ -1,56 +1,59 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.util.*;
 
 public class Main {
-    static int N, M, K, count, max;
-    static int[] arr;
-    static String a, b;
-    static char maxChar;
-    static char[] ch;
-    static StringBuilder sb = new StringBuilder();
-    static Stack<Character> stack = new Stack<>();
-    static int sum;
-    static String answer;
 
-    public static void input() throws Exception {
+    static StringBuilder sb = new StringBuilder();
+    static int N, M, K, count, T, max, min, maxValue;
+    static int jCount, mCount;
+    static int[] arrTwo, arrFive, map;
+
+    public static void main(String[] args) throws IOException {
+        Main main = new Main();
+        main.input();
+        System.out.println(sb.toString());
+    }
+
+    public void input() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String text = br.readLine();
-        while (!text.equals(".")) {
-            answer = "yes";
-            for (char c : text.toCharArray()) {
-                if (c == '(' || c == '[') {
-                    stack.push(c);
-                } else if (c == ')') {
-                    if (!stack.isEmpty() && stack.peek() == '(') {
-                        stack.pop();
-                    } else {
-                        answer = "no";
-                        stack.push(c);
+        StringTokenizer st;
+        Stack<Character> stack = new Stack<>();
+        while (true) {
+            st = new StringTokenizer(br.readLine(),"");
+            String text = st.nextToken();
+            if(text.equals(".")) break;
+            boolean flag=true;
+            for(char c : text.toCharArray()) {
+                if(c==')') {
+                    if(stack.isEmpty() || stack.peek()!='(') {
+                        flag = false;
                         break;
-                    }
-                } else if (c == ']') {
-                    if (!stack.isEmpty() && stack.peek() == '[') {
-                        stack.pop();
                     } else {
-                        answer = "no";
-                        stack.push(c);
-                        break;
+                        stack.pop();
                     }
                 }
+                else if(c==']') {
+                    if(stack.isEmpty() || stack.peek()!='[') {
+                        flag = false;
+                        break;
+                    } else {
+                        stack.pop();
+                    }
+                }
+                else if(c=='(' || c=='['){
+                    stack.push(c);
+                }
             }
-            if (stack.size() != 0) {
-                answer = "no";
-            } else {
-                answer = "yes";
-            }
+            if(!stack.isEmpty()) flag=false;
+            if(flag) sb.append("yes").append("\n");
+            else sb.append("no").append("\n");
             stack.clear();
-            text = br.readLine();
-            System.out.println(answer);
         }
     }
 
-
-    public static void main(String[] args) throws Exception {
-        input();
+    public void Solution() {
     }
 }
