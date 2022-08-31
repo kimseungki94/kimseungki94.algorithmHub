@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
@@ -37,30 +36,30 @@ public class Main {
             System.out.println(min);
             System.out.println(count);
         }
-
     }
 
     public static int BFS() {
-        queue.offer(new Point(N, 0));
+        queue.offer(new Point(N,0));
         while (!queue.isEmpty()) {
             Point p = queue.poll();
             int value = p.value;
             int time = p.time;
-            isVisit[value] = 1;
-            if (value == M) {
-                if (min > time) {
-                    min = time;
-                } else if (min == time) {
+            isVisit[value]=1;
+            if(value==M) {
+                if(min>time) {
+                    min=time;
+                } else if(min==time) {
                     count++;
                 } else {
                     continue;
                 }
             }
-            for (int j = 1; j <= 3; j++) {
-                int data = outValue(value, j);
-                if (data < 0 || data > 100000) continue;
-                if (isVisit[data] == 0) {
-                    queue.offer(new Point(data, time + 1));
+
+            for(int i=1;i<=3;i++) {
+                int editValue=outValue(value,i);
+                if(editValue<0 || editValue>100000) continue;
+                if(isVisit[editValue]==0) {
+                    queue.add(new Point(editValue,time+1));
                 }
             }
         }
@@ -74,10 +73,4 @@ public class Main {
         return 1;
     }
 
-    public static void DFS(int start, int count) {
-        if (limit == count) {
-            if (start == M) size++;
-            return;
-        }
-    }
 }
