@@ -1,84 +1,92 @@
-import java.awt.Point;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.io.Serializable;
+import java.util.*;
 
 public class Main {
-    static int R,C;
-    static int arr[][];
-    static boolean visit[][];
-    static int moveX[] = {-1,0,1,0};
-    static int moveY[] = {0,-1,0,1};
-    public static void main(String[] args) throws Exception {
+
+    private static int N, K, M, count, max;
+    private static int[][] map;
+    private static boolean[][] isVisited;
+    private static int[] dy = {0, -1, 0, 1};
+    private static int[] dx = {-1, 0, 1, 0};
+
+    public static class Point {
+        int row;
+        int col;
+
+        public Point(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (!isVisited[i][j]) {
+                    count++;
+                    max = Math.max(max, BFS(i, j));
+                }
+            }
+        }
+        System.out.println(count);
+        System.out.println(max);
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                for (int bit = 1; bit <= 8; bit <<= 1) {
+                    if ((map[i][j] & bit) != 0) {
+                        isVisited = new boolean[N][M];
+                        map[i][j] -= bit;
+                        max = Math.max(max, BFS(i, j));
+                        map[i][j] += bit;
+                    }
+                }
+            }
+        }
+        System.out.println(max);
+    }
+
+    private static void input() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        C = Integer.parseInt(st.nextToken());
-        R = Integer.parseInt(st.nextToken());
-
-        arr = new int[R][C];
-        visit = new boolean[R][C];
-        for(int r=0; r<R; r++) {
+        M = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
+        map = new int[N][M];
+        isVisited = new boolean[N][M];
+        for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
-            for(int c=0; c<C; c++) {
-                arr[r][c] = Integer.parseInt(st.nextToken());
+            for (int j = 0; j < M; j++) {
+                map[i][j] = Integer.parseInt(st.nextToken());
             }
         }
-
-        int room = 0;
-        int max = 0;
-        for(int r=0; r<R; r++) {
-            for(int c=0; c<C; c++) {
-                if(!visit[r][c]) {
-                    max = Math.max(max, bfs(r,c));
-                    room++;
-                }
-            }
-        }
-        System.out.println(room);
-        System.out.println(max);
-
-        for(int r=0; r<R; r++) {
-            for(int c=0; c<C; c++) {
-                for(int bit=1; bit<=8; bit<<=1) {
-                    if((arr[r][c] & bit)!=0) {
-                        visit = new boolean[R][C];
-                        arr[r][c] -= bit;
-                        max = Math.max(max, bfs(r,c));
-                        arr[r][c] += bit;
-                    }
-                }
-            }
-        }
-        System.out.println(max);
     }
-    private static int bfs(int row, int col) {
+
+    private static int BFS(int row, int col) {
         Queue<Point> queue = new LinkedList<>();
-        queue.add(new Point(col, row));
-        visit[row][col] = true;
-        int count = 1;
-        while(!queue.isEmpty()) {
-
-            Point po = queue.poll();
+        queue.offer(new Point(row, col));
+        isVisited[row][col] = true;
+        int size = 1;
+        while (!queue.isEmpty()) {
+            Point point = queue.poll();
+            int Y = point.row;
+            int X = point.col;
             int bit = 1;
-            for(int d=0; d<4; d++) {
-                if((arr[po.y][po.x] & bit)==0) {
-                    int newX = po.x + moveX[d];
-                    int newY = po.y + moveY[d];
-                    if (!(0 <= newY && newY < R && 0 <= newX && newX < C))
-                        continue;
-                    if(0<=newY && newY<R && 0<=newX && newX<C && !visit[newY][newX]) {
-                        count++;
-                        visit[newY][newX]=true;
-                        queue.add(new Point(newX, newY));
-                    }
+            for (int i = 0; i < 4; i++) {
+                if(i>0) bit=bit<<1;
+                if ((map[Y][X] & bit) == 0) {
+                    int newY = Y + dy[i];
+                    int newX = X + dx[i];
+                    if (newY < 0 || newY >= N || newX < 0 || newX >= M || isVisited[newY][newX]) continue;
+                    size++;
+                    isVisited[newY][newX] = true;
+                    queue.add(new Point(newY, newX));
                 }
-                bit<<=1;
             }
         }
-        return count;
+        return size;
     }
-
-
 }
