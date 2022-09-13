@@ -2,24 +2,23 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-
     static int N,count,max;
     static ArrayList<Problem> list = new ArrayList<>();
-    static PriorityQueue<Integer> pQ = new PriorityQueue<>(Collections.reverseOrder());
-    public static class Problem {
-        int deadLine;
-        int food;
-
-        public Problem(int deadLine, int food) {
-            this.deadLine = deadLine;
-            this.food = food;
-        }
-    }
 
     public static void main(String[] args) throws Exception {
         input();
         Solution();
         System.out.println(count);
+    }
+
+    public static class Problem {
+        int day;
+        int food;
+
+        public Problem(int day, int food) {
+            this.day = day;
+            this.food = food;
+        }
     }
 
     public static void input() throws IOException {
@@ -32,18 +31,16 @@ public class Main {
             int b = Integer.parseInt(st.nextToken());
             list.add(new Problem(a,b));
         }
-        Collections.sort(list,((o1, o2) -> {
-            if(o2.deadLine==o1.deadLine) return o2.food-o1.food;
-            else return o2.deadLine-o1.deadLine;
-        }));
-        max = list.get(0).deadLine;
+        Collections.sort(list,((o1, o2) -> o2.day-o1.day));
+        max = list.get(0).day;
     }
     public static void Solution() {
-        int j=0;
+        PriorityQueue<Integer> pQ = new PriorityQueue<>(Collections.reverseOrder());
+        int dayIndex=0;
         for(int i=max;i>=1;i--) {
-            for(;j<N;j++) {
-                if (list.get(j).deadLine<i) break;
-                pQ.offer(list.get(j).food);
+            for( ;dayIndex<N;dayIndex++) {
+                if(list.get(dayIndex).day<i) break;
+                pQ.offer(list.get(dayIndex).food);
             }
             if(!pQ.isEmpty()) count+=pQ.poll();
         }
