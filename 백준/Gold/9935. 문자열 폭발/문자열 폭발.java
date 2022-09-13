@@ -1,51 +1,58 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 public class Main {
 
-    static int N, M, answer, max;
-    static int[] arr, dp;
-    static boolean isSelected;
-    static String target;
-    static StringBuilder sb = new StringBuilder();
+    static int N;
+    static long cnt;
+    static String text;
+    static String key;
     static Stack<Character> stack = new Stack<>();
+    static StringBuilder sb = new StringBuilder();
 
-    public void input() throws Exception {
+    public static void main(String[] args) throws Exception {
+        input();
+        Solution();
+    }
+
+    public static void input() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        String text = st.nextToken();
+        text = st.nextToken();
         st = new StringTokenizer(br.readLine());
-        target = st.nextToken();
-        for(int i=0;i<text.length();i++) {
-            stack.push(text.charAt(i));
-            if(stack.size()>=target.length()) {
-                boolean flag = true;
-                for(int j=0;j<target.length();j++) {
-                    if(stack.get(stack.size()-target.length()+j) != target.charAt(j)) {
-                        flag=false;
-                        break;
-                    }
-                }
-                if(flag) {
-                    for(int j=0;j<target.length();j++) {
+        key = st.nextToken();
+    }
+    public static void Solution() {
+        for(char c : text.toCharArray()) {
+            stack.push(c);
+            while(stack.size()>=key.length() && stack.get(stack.size()-1)==key.charAt(key.length()-1)) {
+                if(isChecked()) {
+                    for(int i=0;i<key.length();i++) {
                         stack.pop();
                     }
+                } else {
+                    break;
                 }
             }
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        Main main = new Main();
-        main.input();
         if(stack.size()==0) {
             System.out.println("FRULA");
         } else {
-            while (stack.size()!=0) {
-                sb.append(stack.pop());
+            for(int i=0;i<stack.size();i++) {
+                sb.append(stack.get(i));
             }
+            System.out.println(sb.toString());
         }
-        System.out.println(sb.reverse().toString());
+    }
+
+    public static boolean isChecked() {
+        int index=0;
+        for(int i=stack.size()-key.length();i<stack.size();i++) {
+            if(stack.get(i)!=key.charAt(index)) {
+                return false;
+            }
+            index++;
+        }
+        return true;
     }
 }
