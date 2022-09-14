@@ -35,13 +35,12 @@ public class Main {
     }
 
     public static void Solution() {
+        count=list.get(0).start;
         for(int i=0;i<N;i++) {
             int start = list.get(i).start;
             int interval = list.get(i).interval;
-            while (start>count) count++;
-            for(int j=start;j<start+interval;j++) {
-                count++;
-            }
+            if(count<start) count=start;
+            count+=interval;
         }
     }
 
