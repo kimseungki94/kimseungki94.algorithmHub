@@ -26,33 +26,29 @@ public class Main {
             lines.add(new Point(x, y));
         }
 
-        lines.sort(new Comparator<Point>() {
-            @Override
-            public int compare(Point o1, Point o2) {
-                if (o1.x > o2.x) {
+        lines.sort(((o1, o2) -> {
+            if(o1.x>o2.x) return 1;
+            else if(o1.x==o2.x) {
+                if(o1.y>o2.y) {
                     return 1;
-                } else if (o1.x == o2.x) {
-                    if (o1.y > o2.y) {
-                        return 1;
-                    }
                 }
-                return -1;
             }
-        });
+            return -1;
+        }));
 
         long s = lines.get(0).x;
         long e = lines.get(0).y;
         long sum = e - s;
 
-        for (int i = 1; i < lines.size(); i++) {
+        for (int i = 1; i < N; i++) {
             long ns = lines.get(i).x;
             long ne = lines.get(i).y;
 
-            if ((s <= ns) && (ne <= e)) {  
+            if ((s <= ns) && (ne <= e)) {
                 continue;
-            } else if (ns < e) {  
+            } else if (ns < e) {
                 sum += -(e - ns) + (ne - ns);
-            } else {  
+            } else {
                 sum += ne - ns;
             }
             s = ns;
