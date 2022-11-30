@@ -10,9 +10,9 @@ class Solution {
         }
         
         for (int i = 0; i < n; i++) {
-            int max = (int)pQ.poll();
-            if (max <= 0) break;
-            pQ.offer(max - 1);
+            int data = pQ.poll();
+            if (data <= 0) break;
+            pQ.offer(data - 1);
         }
         long answer = 0;
         while (!pQ.isEmpty()) {
