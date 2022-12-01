@@ -27,26 +27,28 @@ class Solution {
     
     public static boolean search(String data) {
         if(queue.isEmpty()) return false;
-        Queue<String> tempQueue = new LinkedList<>();
-        Queue<String> tempQueue2 = new LinkedList<>();
+        ArrayList<String> list = new ArrayList<>();
+        ArrayList<String> temp = new ArrayList<>();
         for(String s : queue) {
-            tempQueue2.offer(s);
+            temp.add(s);
         }
         boolean flag = false;
         String text="";
-        for(String s : tempQueue2) {
+        for(String s : temp) {
             if(!flag && s.equals(data)) {
                 text = queue.poll();
                 flag=true;
             } else {
-                tempQueue.offer(queue.poll());
+                list.add(queue.poll());
             }
         }
         
         if(flag) {
-            tempQueue.offer(text);
+            list.add(text);
         }
-        queue=tempQueue;
+        for(String s : list) {
+            queue.offer(s);
+        }
         return flag;
     }
 }
