@@ -3,9 +3,10 @@ import java.util.*;
 class Solution {
     
     static List<List<Integer>> graph = new ArrayList<>();
-    static int[] arr = new int[20001];
-    static int count, finalDistance;
+    static int[] arr;
+    static int finalDistance;
     public int solution(int n, int[][] edge) {
+        arr = new int[n+1];
         int answer = 0;
         for(int i=0;i<=n;i++) {
             graph.add(new ArrayList<Integer>());
