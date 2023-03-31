@@ -4,7 +4,7 @@
 
 ### 성능 요약
 
-메모리: 61 MB, 시간: 10.95 ms
+메모리: 61.6 MB, 시간: 8.90 ms
 
 ### 구분
 
@@ -42,7 +42,5 @@
 </tr>
 </tbody>
       </table>
-<p><a href="http://stats.ioinformatics.org/countries/SWE" target="_blank" rel="noopener">출처</a></p>
-
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://programmers.co.kr/learn/challenges
